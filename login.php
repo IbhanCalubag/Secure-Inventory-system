@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 require_once 'security.php';
-require_once 'db.php';
 
 $security = getSecurityManager();
 
