@@ -1,39 +1,19 @@
-# Enable rewrite engine
-RewriteEngine On
+# .htaccess for Neocities
+DirectoryIndex index.php
 
-# Security headers
-Header set X-Content-Type-Options "nosniff"
-Header set X-Frame-Options "SAMEORIGIN"
-Header set X-XSS-Protection "1; mode=block"
-
-# Prevent directory listing
+# Security
 Options -Indexes
 
-# Remove .php extension from URLs
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.*)$ $1.php [L]
+# Enable PHP
+AddType application/x-httpd-php .php
 
-# Custom error pages
-ErrorDocument 404 /index.php
-ErrorDocument 403 /index.php
-ErrorDocument 500 /index.php
-
-# Protect sensitive files
-<FilesMatch "^(config\.php|db\.php|\.sql|php_errors\.log|backup|audit_logger\.php)$">
+# Protect SQLite file
+<Files "database.sqlite">
     Order deny,allow
     Deny from all
-</FilesMatch>
+</Files>
 
-# Force HTTPS on InfinityFree
-RewriteCond %{HTTPS} off
-RewriteCond %{HTTP_HOST} ^(www\.)?[^.]+\.[^.]+$ [NC]
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-# Set PHP settings via .htaccess
-php_flag display_errors off
-php_flag log_errors on
-php_value error_log php_errors.log
-php_value upload_max_filesize 10M
-php_value post_max_size 12M
-php_value max_execution_time 300
+<Files "*.sqlite">
+    Order deny,allow
+    Deny from all
+</Files>
