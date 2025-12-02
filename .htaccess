@@ -1,19 +1,32 @@
-# .htaccess for Neocities
+# Neocities Configuration
 DirectoryIndex index.php
-
-# Security
 Options -Indexes
 
 # Enable PHP
 AddType application/x-httpd-php .php
+AddHandler application/x-httpd-php .php
 
-# Protect SQLite file
-<Files "database.sqlite">
+# Security - Protect sensitive files
+<FilesMatch "^(config\.php|db\.php|database\.sqlite|\.sqlite|php_errors\.log)$">
     Order deny,allow
     Deny from all
-</Files>
+</FilesMatch>
 
-<Files "*.sqlite">
-    Order deny,allow
-    Deny from all
-</Files>
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "DENY"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Custom Error Pages
+ErrorDocument 404 /index.php
+ErrorDocument 403 /index.php
+ErrorDocument 500 /error500.html
+
+# Prevent hotlinking
+RewriteEngine On
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?([^.]+\.)?yourusername\.neocities\.org [NC]
+RewriteRule \.(jpg|jpeg|png|gif|css|js)$ - [NC,F,L]
