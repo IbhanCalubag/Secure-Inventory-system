@@ -1,31 +1,4 @@
 <?php
-// Add this at the VERY TOP of your index.php
-require_once 'config.php';
-require_once 'db.php';
-
-// Check if user is logged in
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
-
-// Check session timeout
-if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > SESSION_TIMEOUT_MINUTES * 60)) {
-    session_unset();
-    session_destroy();
-    header('Location: login.php?timeout=1');
-    exit;
-}
-
-// Update last activity time
-$_SESSION['last_activity'] = time();
-
-// Rest of your existing code...
-
 require_once 'config.php';
 
 if (session_status() === PHP_SESSION_NONE) {
